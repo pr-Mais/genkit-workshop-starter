@@ -14,7 +14,7 @@ import { chunk } from './chunker';
 
 const ai = genkit({
   plugins: [
-    googleAI(),
+    googleAI({ apiKey:'AIzaSyA8-3XcAXW81zf6bxiPZ4dk80Hcqtz_gV8'}),
     devLocalVectorstore([
       {
         indexName: 'researchAnalyzer',
@@ -38,16 +38,8 @@ export const researchIndexingFlow = ai.defineFlow(
       extractTextFromPDF(input)
     );
 
-    const chunkingConfig = {
-      minLength: 1000,
-      maxLength: 2000,
-      splitter: 'sentence',
-      overlap: 100,
-      delimiters: '',
-    } as any;
-
     const chunks = await ai.run('chunk-it', async () =>
-      chunk(pdfTxt, chunkingConfig)
+      chunk(pdfTxt)
     );
 
     console.log(`Total chunks: ${chunks.length}`);
@@ -57,10 +49,14 @@ export const researchIndexingFlow = ai.defineFlow(
       return Document.fromText(text, { input });
     });
 
-    await ai.index({
-      indexer: researchPdfIndexer,
-      documents,
-    });
+    for (let i = 0; i < documents.length; i += 100) {
+      const batch = documents.slice(i, i + 100);
+      console.log(`Indexing ${i} - ${i + batch.length}`);
+      await ai.index({
+        indexer: researchPdfIndexer,
+        documents: batch,
+      });
+    }
   }
 );
 
@@ -82,7 +78,7 @@ export const askQuestion = ai.defineFlow(
     const { text } = await ai.generate({
       prompt: `
 You are acting as a helpful AI assistant that can answer 
-questions about the food available on the menu at Genkit Grub Pub.
+questions about research papers.
 
 Use only the context provided to answer the question.
 If you don't know, do not make up an answer.
