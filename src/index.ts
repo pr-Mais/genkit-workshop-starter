@@ -1,22 +1,22 @@
-import { genkit } from "genkit/beta";
+import { genkit, z } from 'genkit';
 
-import { googleAI, gemini20Flash } from "@genkit-ai/googleai";
+import { googleAI, gemini20Flash } from '@genkit-ai/googleai';
+
+import { extractTextFromPDF } from './pdf-loader';
 
 const ai = genkit({
   plugins: [googleAI()],
   model: gemini20Flash,
 });
 
-async function main() {
-  const { stream } = ai.generateStream(
-    'Invent a menu item for a pirate themed restaurant.'
-  );
-  for await (const chunk of stream) {
-    const text = chunk.text;
-    if (text) {
-      console.log(text);
-    }
+export const researchFlow = ai.defineFlow(
+  {
+    name: 'researchAnalyzer',
+    inputSchema: z.string(), // PDF path or text
+    outputSchema: z.string(), // Analysis result
+  },
+  async (input) => {
+    const rawText = await extractTextFromPDF(input);
+    return rawText;
   }
-}
-
-main()
+);

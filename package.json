@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "npx tsx --watch --env-file=.env src/index.ts",
     "build": "tsc",
-    "start": "node --env-file=.env dist/index.js",
-    "dev": "tsc && node --env-file=.env dist/index.js"
+    "genkit": "genkit start -- npm run start"
   },
   "keywords": [],
   "author": "",
@@ -13,10 +13,13 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^22.15.3",
+    "@types/pdf-parse": "^1.1.5",
+    "genkit-cli": "^1.7.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.7.0",
-    "genkit": "^1.7.0"
+    "genkit": "^1.7.0",
+    "pdf-parse": "^1.1.1"
   }
 }
