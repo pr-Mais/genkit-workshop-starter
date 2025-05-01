@@ -18,8 +18,3 @@ You need a Gmail account to follow the steps.
 1. Clone the project
 2. Open it using your favorite editor
 3. Run the command: `npm run start`
-
-## 4. Create the first workflow
-1. Checkout to the first step `git checkout 1/define-flow`
-2. Check the new code at `src/index.ts`
-3. Run the Genkit CLI (from the root of this project): `npm run genkit`
